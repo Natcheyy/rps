@@ -1,0 +1,30 @@
+html {
+    background-color: white;
+}
+
+/* Flex the body aligns content vertical or horizonal */
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Flex the div aligns their internal content */
+div {
+    border: 4px solid rebeccapurple;
+    background-color: peachpuff;
+    display: flex;
+    align-items: center;
+    margin: 10px;
+    
+}
+
+.selectionContainer button {
+    margin: 0 10px;
+}
+
+
+#resultText{
+    white-space: pre-line;
+}

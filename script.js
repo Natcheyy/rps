@@ -14,8 +14,10 @@ Lets make a function to grab the random computer choice
 And a function to take the human choice from a prompt
 */
 
+
 let humanScore = 0;
 let computerScore = 0;
+let numberOfRounds = 1;
 
 function getComputerChoice(){
     const rpsChoices = ["rock", "paper", "scissors"];
@@ -28,84 +30,116 @@ function getComputerChoice(){
     return rpsChoices[randomIndex];
 }
 
-function getHumanChoice(){
-    //make array of choices so user does not enter random string
-    const validChoices = [`rock`, `paper`, `scissors`];
-    let humanChoice;
-    //have not learned yet but basially
-    //prompt the user over and over, while....
-    do {
-        humanChoice = prompt("Rock, Paper, or Scissors?").toLowerCase();
-    }
-    //the validChoices array does NOT include the humanChoice
-    while(!validChoices.includes(humanChoice));
-
-    return humanChoice;
-}
-
-function whoWon(getHumanChoice, getComputerChoice){
-    switch(getHumanChoice.toLowerCase()){
+function whoWon(humanChoice, getComputerChoice){
+    let whoWinsMessage = ``;
+    switch(humanChoice){
         case `rock`:
             if(getComputerChoice === `rock`){
-                console.log(`You tied!`)
+                whoWinsMessage = `You tied!`
             }
             else if(getComputerChoice === `paper`){
-                console.log(`Computer wins!`);
+                whoWinsMessage = `Computer wins!`
                 computerScore++
             }
             else if(getComputerChoice === `scissors`){
-                console.log(`Human wins!`);
+                whoWinsMessage = `You win!`
                 humanScore++
             }
             break;
         case `paper`:
             if(getComputerChoice === `rock`){
-                console.log(`Human wins!`)
+                whoWinsMessage = `You win!`
                 humanScore++;
             }
             else if(getComputerChoice === `paper`){
-                console.log(`You tied!`);
+                whoWinsMessage = `You tied!`
             }
             else if(getComputerChoice === `scissors`){
-                console.log(`Computer wins!`);
+                whoWinsMessage = `Computer wins!`
                 computerScore++;
             }
             break;
         case `scissors`:
             if(getComputerChoice === `rock`){
-                console.log(`Computer wins!`)
+                whoWinsMessage = `Computer wins!`
                 computerScore++;
             }
             else if(getComputerChoice === `paper`){
-                console.log(`Human wins!`);
+                whoWinsMessage = `You win!`
                 humanScore++;
             }
             else if(getComputerChoice === `scissors`){
-                console.log(`You tied!`);
+                resultText.textContent = `You tied!`
             }
             break;
 
     }
+    return whoWinsMessage;
 }   
 
-
+//whoWon was not returning anything before, so I had it return the message of who won
+//Then i put that message in the resultText p element in my html
 function playRound(humanChoice, computerChoice){
-    console.log(`Human picked: ${humanChoice}, Computer picked: ${computerChoice}`);
-    whoWon(humanChoice, computerChoice);
-    console.log(`The score is... Human: ${humanScore}  Computer: ${computerScore}`);
+    const whoWinsMessage = whoWon(humanChoice, computerChoice);
+    resultText.textContent = `Human picked: ${humanChoice}, Computer picked: ${computerChoice}\n${whoWinsMessage}\nThe score is... Human: ${humanScore}  Computer: ${computerScore}`;
+    
 }
 
+//but they were all on one line. So in order to have the messages appear on new lines
+//I used \n. But you need to set the white-space property on the resultText element to pre-line in CSS.
+//This preserves the newline characters in text content
+
+resultText.style.whiteSpace = "pre-line";
+
+
+const roundText = document.querySelector("#roundText");
 function playGame(){
 
+
+
+    //select the selectionContainer div element
+    const selectionContainer = document.querySelector(".selectionContainer");
+    //creating ONE event listener and applying it to all buttons, more effecient the looping through all the buttons and creating seperate event listeners for each
+    const resultText = document.querySelector("#resultText");
+    selectionContainer.addEventListener(`click`, (event) => {
+
+        if (numberOfRounds > 5){
+            console.log("GAME OVER");
+            return;
+        }
+
+        roundText.textContent = `It is round: ${numberOfRounds}`;
+        
+
+
+        //for each click event, grab the target, so <button id="rockButton">
+        let target = event.target;
+        //delete getHumanChoice() function
+        let humanChoice;
+        //for each target.id so button id="paperButton"
+        switch(target.id){
+            case `rockButton`:
+                //set the humanChoice to that string
+                humanChoice = `rock`;
+        
+                //then playRound for the choices
+                playRound(humanChoice, getComputerChoice());
+                break;
+            case `paperButton`:
+                humanChoice = `paper`;
+
+                playRound(humanChoice, getComputerChoice());
+                break;
+            case `scissorsButton`:
+                humanChoice = `scissors`;
+                playRound(humanChoice, getComputerChoice());
+                break;
+        }
+        numberOfRounds++;       
+    });
     
 
-    let numberOfRounds = 1;
-    while (numberOfRounds <= 5){
-        console.log(`It is round: ${numberOfRounds}`);
-        playRound(getHumanChoice(), getComputerChoice());
-        numberOfRounds++;
-    }
-
+    
 }
 
 playGame();
